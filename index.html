@@ -1,0 +1,1176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dungeon Escape</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <script>
+        //JAVASCIPT
+        //global variables
+        let speed1 = 5; //speed of spike ball
+        let speed2 = 2; //speed of jester
+
+        let bellaLives = 3; //lives that bella starts with
+        let amberLives = 3; //lives that amber starts with
+
+        let Ruby = 0; //stores amount of rubies collected
+        let ruby1 = 0; //checks if the first ruby is collected
+        let ruby2 = 0; //checks if the second ruby is collected
+        let Emerald = 0; //stores amount of emeralds collected
+        let emerald1 = 0; //checks if the first emerald is collected
+        let emerald2 = 0; //checks if the second emerald is collected
+        let Diamond = 0; //stores amount of diamonds collected
+        let diamond1 = 0; //checks if the first diamond is collected
+        let diamond2 = 0; //checks if the second diamond is collected
+
+        //global variables for ease
+        let ctx;
+        let ball = [];
+        let jester = [];
+        let a;
+        let char1;
+        let char2;
+        let totalLives;
+        let grade;
+
+        //variables that represent what events have happened with the characters to activate another function
+        let on = 1;
+        let off = 0;
+        let up = 0;
+        let down = 1;
+        let left = 0;
+        let right = 0;
+        let lifeAdded = 0;
+        let aLeaves = 1;
+        let bLeaves = 1;
+
+        //stores border values
+        let bottomBorder;
+        let rightBorder;
+
+        //all pictures in game
+        let pic1 = new Image();
+        let pic2 = new Image();
+        let pic3 = new Image();
+        let pic4 = new Image();
+        let pic5 = new Image();
+        let pic6 = new Image();
+        let pic7 = new Image();
+        let pic8 = new Image();
+        let pic9 = new Image();
+        let pic10 = new Image();
+        let pic11 = new Image();
+        let pic12 = new Image();
+        let pic13 = new Image();
+        let pic14 = new Image();
+        let pic15 = new Image();
+        let pic16 = new Image();
+        let pic17 = new Image();
+        let pic18 = new Image();
+        let pic19 = new Image();
+        let pic20 = new Image();
+
+        //all gems in game
+        let gem1 = new Image();//diamond
+        let gem2 = new Image();//d
+        let gem3 = new Image();//ruby
+        let gem4 = new Image();//r
+        let gem5 = new Image();//emerald
+        let gem6 = new Image();//e
+
+        //all heart at the top left of the screen
+        let life1 = new Image(); //ambers hearts
+        let life2 = new Image();
+        let life3 = new Image();
+        let life4 = new Image(); //bellas hearts
+        let life5 = new Image();
+        let life6 = new Image();
+
+        //sources to all pictures
+        pic1.src = "img/vortexright.png"; //found on gifimage.net, named "portal gif 18" ARTIST NOT FOUND ON WEBSTIE
+        pic2.src = "img/vortexleft.png"; //found on gifimage.net, named "portal gif 18" ARTIST NOT FOUND ON WEBSTIE
+        pic3.src = "img/LetterA.png"; //found on society6.com and "wongstock.com" is the artist
+        pic4.src = "img/LetterB.png";//found on society6.com and "wongstock.com" is the artist
+        pic5.src = "img/brick.png"; //made by myself on pixelart.com
+        pic6.src = "img/lava.png"; //found on nicepng.com, named "Lava - Pixel Lava Art Png" ARTIST NOT FOUND ON WEBSTIE
+        pic7.src = "img/vine.png"; ///found on stockunlimited.com by an internal aritst or ARTIST WAS NOT FOUND ON WEBSTIE
+        pic8.src = "img/spikesdown.png"; //found on subpng.com, uploaded by user "Tlmuflhb"
+        pic9.src = "img/spikesup.png"; //found on subpng.com, uploaded by user "Tlmuflhb"
+        pic10.src = "img/purpleflowervines.png"; //found on pixelartmaker.com named "pink.vine" ARTIST NOT FOUND ON WEBSTIE
+        pic11.src = "img/orangeflowervines.png"; //found on pixelartmaker.com named "yellow.vine" ARTIST NOT FOUND ON WEBSTIE
+        pic12.src = "img/leftLever.png"; //found on mineblocks.com, made by user "Gingerbread Man"
+        pic13.src = "img/platformhorizantal.png"; //found on pixelartmaker.com named "platform" ARTIST NOT FOUND ON WEBSTIE
+        pic14.src = "img/platformvertical.png"; //found on pixelartmaker.com, made by "PAM"
+        pic15.src = "img/button.png"; //found on pikpng.com, named "Button Clicker Button - Pixel Avengers Infinity War Clipart" ARTIST NOT FOUND ON WEBSTIE
+        pic16.src = "img/waterfall.png"; //found on deviantart.com, made by user "TheGuyNamedJosh"
+        pic17.src = "img/blockedRightLever2.png"; //photshopped to be covered by image of cage, it can be found on pixelartmaker.com and is name "cage" ARTIST NOT FOUND ON WEBSTIE
+        pic18.src = "img/potion.png"; //found on pinclipart.com, named "Poção Pixel Png Freetoedit - Maplestory Potion Clipart" ARTIST NOT FOUND ON WEBSTIE
+        pic19.src = "img/exit.png"; //found on pixelartmaker.com, named "Exit button" ARTIST NOT FOUND ON WEBSTIE
+        pic20.src = "img/door.png"; //found on pixelart.com, by alvaro alamillo vargas
+
+        //sources to all gems
+        gem1.src = "img/diamond.png"; //found on opengameart.org, by Clint Bellanger
+        gem2.src = "img/diamond.png"; //found on opengameart.org, by Clint Bellanger
+        gem3.src = "img/ruby.png"; //found on opengameart.org, by Clint Bellanger
+        gem4.src = "img/ruby.png"; //found on opengameart.org, by Clint Bellanger
+        gem5.src ="img/Emerald.png"; //found on opengameart.org, by Clint Bellanger
+        gem6.src ="img/Emerald.png"; //found on opengameart.org, by Clint Bellanger
+
+        //sources to all hearts
+        life1.src = "img/heart.png"; //found on pngtransparent.com named "Heart Low Pixel PNG Transparent High Definition" ARTIST NOT FOUND ON WEBSTIE
+        life2.src = "img/heart.png"; //found on pngtransparent.com named "Heart Low Pixel PNG Transparent High Definition" ARTIST NOT FOUND ON WEBSTIE
+        life3.src = "img/heart.png"; //found on pngtransparent.com named "Heart Low Pixel PNG Transparent High Definition" ARTIST NOT FOUND ON WEBSTIE
+        life4.src = "img/heart.png"; //found on pngtransparent.com named "Heart Low Pixel PNG Transparent High Definition" ARTIST NOT FOUND ON WEBSTIE
+        life5.src = "img/heart.png"; //found on pngtransparent.com named "Heart Low Pixel PNG Transparent High Definition" ARTIST NOT FOUND ON WEBSTIE
+        life6.src = "img/heart.png"; //found on pngtransparent.com named "Heart Low Pixel PNG Transparent High Definition" ARTIST NOT FOUND ON WEBSTIE
+
+        //height and width dot notation syntaxes for hearts
+        life1.height = 50;
+        life1.width = 50;
+        life2.height = 50;
+        life2.width = 50;
+        life3.height = 50;
+        life3.width = 50;
+        life4.height = 50;
+        life4.width = 50;
+        life5.height = 50;
+        life5.width = 50;
+        life6.height = 50;
+        life6.width = 50;
+
+        //height and width syntaxes for gems
+        gem1.height = 60;
+        gem1.width = 70;
+        gem2.height = 60;
+        gem2.width = 70;
+        gem3.height = 52;
+        gem3.width = 58;
+        gem4.height = 52;
+        gem4.width = 58;
+        gem5.height = 52;
+        gem5.width = 52;
+        gem6.height = 52;
+        gem6.width = 52;
+
+        //height and width syntaxes for pictures
+        pic13.width = 198;
+        pic13.height = 84;
+
+        pic14.left = 1600;
+        pic14.top = 0;
+
+        pic18.width = 29;
+        pic18.height = 47;
+
+        //bella = left, char1, img/girl1.png, bellaLives, rubies, pic4 is B, life4, 5, and 6
+        //amber = right, char2, img/girl2.png, amberLives, Emeralds, pic3 is A, life1, 2, and 3
+
+        function LoadIn() //initalize function
+        {
+            alert ("Welcome to Dungeon Escape! Please change the zoom values on your browser to fit all contents of the screen before starting, Thank You!");
+            ctx = document.getElementById("myCanvas").getContext("2d");
+            ball.push(createImage("img/spikeBall.png", "ball", 0, 300, 32, 144));//obstacle 4-spike ball found on deviantart.com, made by by user "RollNotToDie"
+            jester.push(createImage("img/enemy.png", "big boi ben", 900, 200, 74, 100));//obstacle 6-neutral jester, big boi ben, found on pixelartmaker.com named "Tealeaf SHSL Jester" ARTIST NOT FOUND ON WEBSTIE
+            drawShapes();
+            bellaLives = 3;
+            if (bellaLives == 3)
+            {
+                life6.height = 50;
+                life6.width = 50;
+                life5.height = 50;
+                life5.width = 50;
+                life4.height = 50;
+                life4.width = 50;
+            }
+            amberLives = 3;
+            if (amberLives == 3)
+            {
+                life3.height = 50;
+                life3.width = 50;
+                life2.height = 50;
+                life2.width = 50;
+                life1.height = 50;
+                life1.width = 50;
+            }
+            char1 = createImage("img/girl1.png", "Bella", 0, 780, 70 , 120); //found on freepik.com, made by user "user7030688"
+            char2 = createImage("img/girl2.png", "Amber", 150, 780, 70 , 120); //found on freepik.com, made by user "user7030688"
+            ctx.drawImage(char1, char1.left, char1.top, char1.width, char1.height);
+            ctx.drawImage(char2, char2.left, char2.top, char2 .width, char2.height);
+            drawIn();
+            for (let i=0; i<ball.length; i++)
+            {
+                ctx.drawImage( ball[i], ball[i].left, ball[i].top, ball[i].width, ball[i].height);
+            }
+            for (let i=0; i<jester.length; i++)
+            {
+                ctx.drawImage( jester[i], jester[i].left, jester[i].top, jester[i].width, jester[i].height);
+            }
+        }
+
+        function drawIn() //draws shapes and applies all functions
+        {
+            a=requestAnimationFrame(drawIn);
+            ctx=document.getElementById("myCanvas").getContext("2d");
+            drawShapes();
+            checkWinOrLoss();
+            checkBorders();
+            checkInnerBorders();
+            checkHeartsBella();
+            checkHeartsAmber();
+            drawLever();
+            drawPlatforms();
+            drawWaterfall();
+            drawBall();
+            drawJesterBen();
+            moveBella();
+            moveAmber();
+            checkCollision1();
+            checkCollision2();
+            checkCollision3();
+            checkCollision4();
+            checkLava1();
+            checkLava2();
+            checkSpikes1();
+            checkSpikes2();
+            checkIvy1();
+            checkIvy2();
+            collectRuby();
+            collectEmerald();
+            collectDiamond();
+            collectPotion();
+        }
+
+        function drawShapes()
+        {
+            drawRectangle(0, 0, 1890, 900, "#3f3f3f");//background
+
+            drawPicture(life1, 0, 0, life1.width, life1.height);//heart 1, Amber
+            drawPicture(life2, 60, 0, life2.width, life2.height);//heart 2, Amber
+            drawPicture(life3, 120, 0, life3.width, life3.height);//heart 3, Amber
+            drawPicture(pic3, 180, 0, 50, 50);//Letter A
+
+            drawPicture(life4, 0, 60, life4.width, life4.height);//heart 4, Bella
+            drawPicture(life5, 60, 60, life5.width, life5.height);//heart 5, Bella
+            drawPicture(life6, 120, 60, life6.width, life6.height);//heart 6, Bella
+            drawPicture(pic4, 180, 60, 50, 50);//Letter B
+
+            drawRectangle(0, 300, 1890, 45, "#808080");//top landing
+            drawRectangle(0, 600, 1890, 45, "#808080");//middle landing
+
+            drawPicture(pic2, 0, 350, 145, 273);//vortex-middle
+
+            drawText("You are Bella...and you are Amber!", 5, 770, 300, "#000000", "18px Arial"); //Character introduction
+            drawText("Bella collects rubies and Amber collects emeralds, Both can collect diamonds. To escape You have to collect all the Gems. Good Luck!", 80, 630, 900, "#000000", "18px Arial"); //gems instructions
+
+            //gems
+            drawPicture(gem2, 1250, 530, gem2.width, gem2.height);//diamond
+            drawPicture(gem3, 760, 820, gem3.width, gem3.height);//ruby
+            drawPicture(gem4, 1110, 200, gem4.width, gem4.height);//ruby
+            drawPicture(gem5, 1200, 820, gem5.width, gem5.height);//emerald
+
+            //+1 heart potion
+            drawPicture(pic18, 820, 530, pic18.width, pic18.height);//potion
+
+            //obstacle 1-lava:
+            drawPicture(pic5, 500, 855, 30, 45); //left brick
+            drawPicture(pic6, 530, 870, 130, 30,); //lava
+            drawPicture(pic5, 630, 855, 30, 45); //right brick
+            drawText("Avoid the lava and Spikes!", 300, 700, 500, "#000000", "25px Arial"); //"avoid the lava and spikes"
+
+            //obstacle 2-spikes
+            drawPicture(pic9, 940, 855, 100, 45); //spikes facing up
+            drawPicture(pic8, 840, 645, 100, 45); //spikes facing down
+            drawPicture(pic8, 940, 645, 100, 45); //spikes facing down
+            drawPicture(pic8, 1040, 645, 100, 45); //spikes facing down
+
+            drawPicture(pic7, 1600, 300, 120, 290); //vine 1
+            drawPicture(pic7, 1660, 300, 120, 310); //vine 2
+            drawPicture(pic7, 1720, 300, 120, 280); //vine 3
+            drawPicture(pic7, 1800, 300, 120, 300); //vine 4
+
+            //obstacle 5-vines
+            drawPicture(pic10, 500, 480, 60, 127.5, "#808080");//purple flower vines
+            drawPicture(pic11, 800, 300, 100, 180, "#808080");//orange flower vines
+            drawPicture(pic10, 1100, 480, 60, 127.5, "#808080");//purple flower vines
+            drawPicture(pic10, 1400, 480, 60, 127.5, "#808080");//purple flower vines
+
+            //exit
+            drawPicture(pic20, 5, 125, 99, 174);//door
+            drawPicture(pic19, 120, 146, 72, 31);//exit sign
+        }
+
+        function checkBorders() //checks outer borders to make sure character does not go off canvas,
+        // learnt from https://stackoverflow.com/questions/22739060/creating-player-boundaries-in-javascript Authors of the code: asked by user "li x", answered by users "prokopcm" and "iain_simpson"
+        {
+            rightBorder = 1890 - char1.width;
+            bottomBorder = 900 - char1.height;
+            if (char1.left < 0)
+            {
+                char1.left = 0;
+            }
+            if (char1.left > rightBorder)
+            {
+                char1.left = rightBorder;
+            }
+            if (char1.top < 0)
+            {
+                char1.top = 0;
+            }
+            if (char1.top > bottomBorder)
+            {
+                char1.top = bottomBorder;
+            }
+            if (char2.left < 0)
+            {
+                char2.left = 0;
+            }
+            if (char2.left > rightBorder)
+            {
+                char2.left = rightBorder;
+            }
+            if (char2.top < 0)
+            {
+                char2.top = 0;
+            }
+            if (char2.top > bottomBorder)
+            {
+                char2.top = bottomBorder;
+            }
+        }
+
+        function checkInnerBorders() //borders to prevent cheating of hopping through levels
+        {
+            if(char1.top < 622.5 + 22.5 && char1.top + char1.height > 622.5 && char1.left < 0 + 1890 && char1.left + char1.width > 0)
+            {
+                char1.top = 645;
+            }
+            if(char2.top < 622.5 + 22.5 && char2.top + char2.height > 622.5 && char2.left < 0 + 1890 && char2.left + char2.width > 0)
+            {
+                char2.top = 645;
+            }
+            if(char1.top < 600 + 22.5 && char1.top + char1.height > 600 && char1.left < 0 + 1890 && char1.left + char1.width > 0)
+            {
+                char1.top = 480;
+            }
+            if(char2.top < 600 + 22.5 && char2.top + char2.height > 600 && char2.left < 0 + 1890 && char2.left + char2.width > 0)
+            {
+                char2.top = 480;
+            }
+            if(char1.top < 322.5 + 22.5 && char1.top + char1.height > 322.5 && char1.left < 0 + 1649 && char1.left + char1.width > 0)
+            {
+                char1.top = 345;
+            }
+            if(char2.top < 322.5 + 22.5 && char2.top + char2.height > 322.5 && char2.left < 0 + 1649 && char2.left + char2.width > 0)
+            {
+                char2.top = 345;
+            }
+            if(char1.top < 300 + 22.5 && char1.top + char1.height > 300 && char1.left < 0 + 1649 && char1.left + char1.width > 0)
+            {
+                char1.top = 180;
+            }
+            if(char2.top < 300 + 22.5 && char2.top + char2.height > 300 && char2.left < 0 + 1649 && char2.left + char2.width > 0)
+            {
+                char2.top = 180;
+            }
+        }
+
+        //obstacle 3-lever to portal
+        function drawLever() //draws lever to portal, draws portal, draws diamond, collects diamond, and teleports character
+        {
+            drawPicture(pic12, 1400, 646, 94, 62); //lever to left
+                if (char1.top < 646 + 62 && char1.top + char1.height > 646 && char1.left < 1400 + 94 && char1.left + char1.width > 1400)
+                {
+                    drawPicture(pic1, 1745, 627, 145, 273);//vortex-lower
+                    pic12.src = "img/rightLever.png";
+                    off = 1;
+                }
+                if (char2.top < 646 + 62 && char2.top + char2.height > 646 && char2.left < 1400 + 94 && char2.left + char2.width > 1400)
+                {
+                    drawPicture(pic1, 1745, 627, 145, 273);//vortex-lower
+                    pic12.src = "img/rightLever.png";
+                    off = 1;
+                }
+                if (on == off)
+                {
+                    drawPicture(pic1, 1745, 627, 145, 273);//vortex-lower
+                    drawPicture(gem1, 1600, 750, gem1.width, gem1.height);//diamond
+                    if (char1.top < 627 + 273 && char1.top + char1.height > 627 && char1.left < 1745 + 145 && char1.left + char1.width > 1745)
+                    {
+                        char1.left = 50;
+                        char1.top = 480;
+                    }
+                    if (char2.top < 627 + 273 && char2.top + char2.height > 627 && char2.left < 1745 + 145 && char2.left + char2.width > 1745)
+                    {
+                        char2.left = 100;
+                        char2.top = 480;
+                    }
+                    if (char1.top < 750 + 60 && char1.top + char1.height > 750 && char1.left < 1600 + 70 && char1.left + char1.width > 1600)
+                    {
+                        gem1.height = 0;
+                        gem1.width = 0;
+                        diamond2 = 1;
+                        Diamond = diamond1 + diamond2;
+                    }
+                    if (char2.top < 750 + 60 && char2.top + char2.height > 750 && char2.left < 1600 + 70 && char2.left + char2.width > 1600)
+                    {
+                        gem1.height = 0;
+                        gem1.width = 0;
+                        diamond2 = 1;
+                        Diamond = diamond1 + diamond2;
+                    }
+                }
+            document.getElementById("diamond").innerHTML = Diamond.toString();
+        }
+
+        //obstacle 7-platforms
+        function drawPlatforms() //draws platforms, draws button, switches platforms position when button is pressed, and makes a life lost if touched before button press
+        {
+            drawPicture(pic13, 1100, 140, 84, 43, "#808080");//horizontal platform
+            drawPicture(pic14, pic14.left, pic14.top, 49, 332, "#808080");//vertical platform
+            drawPicture(pic15, 1820, 40, 70, 87);//button
+            if (char1.top <  130 + 43 && char1.top + char1.height > 130 && char1.left < 1090 + 64 && char1.left + char1.width > 1090)
+            {
+                bellaLives--;
+                checkHeartsBella();
+                char1.left = 1800;
+                char1.top = 180;
+            }
+            if (char2.top < 130 + 43 && char2.top + char2.height > 130 && char2.left < 1090 + 64 && char2.left + char2.width > 1090)
+            {
+                amberLives--;
+                checkHeartsAmber();
+                char2.left = 1700;
+                char2.top = 180;
+            }
+            if (up === 0)
+            {
+                if (char1.top <  0 + 332 && char1.top + char1.height > 0 && char1.left < 1600 + 49 && char1.left + char1.width > 1600)
+                {
+                    bellaLives--;
+                    checkHeartsBella();
+                    char1.left = 1800;
+                    char1.top = 180;
+                }
+                if (char2.top < 0 + 332 && char2.top + char2.height > 0 && char2.left < 1600 + 49 && char2.left + char2.width > 1600)
+                {
+                    amberLives--;
+                    checkHeartsAmber();
+                    char2.left = 1700;
+                    char2.top = 180;
+                }
+            }
+            if (char1.top < 40 + 87 && char1.top + char1.height > 40 && char1.left < 1820 + 70 && char1.left + char1.width > 1820)
+            {
+                pic14.left = 1600;
+                pic14.top = 306;
+                up = 1;
+                speed1 = 0;
+            }
+            if (char2.top < 40 + 87 && char2.top + char2.height > 40 && char2.left < 1820 + 70 && char2.left + char2.width > 1820)
+            {
+                pic14.left = 1600;
+                pic14.top = 306;
+                up = 1;
+                speed1 = 0;
+            }
+            if (down === up)
+            {
+                if (char1.top <  0 + 332 && char1.top + char1.height > 0 && char1.left < 1600 + 49 && char1.left + char1.width > 1600)
+                {
+                    //nothing occurs character passes
+                }
+                if (char2.top < 0 + 332 && char2.top + char2.height > 0 && char2.left < 1600 + 49 && char2.left + char2.width > 1600)
+                {
+                    //nothing occurs character passes
+                }
+                if (char1.top <  306 + 332 && char1.top + char1.height > 306 && char1.left < 1600 + 49 && char1.left + char1.width > 1600)
+                {
+                    bellaLives--;
+                    checkHeartsBella();
+                    char1.left = 50;
+                    char1.top = 480;
+                }
+                if (char2.top < 306 + 332 && char2.top + char2.height > 306 && char2.left < 1600 + 49 && char2.left + char2.width > 1600)
+                {
+                    amberLives--;
+                    checkHeartsAmber();
+                    char2.left = 100;
+                    char2.top = 480;
+                }
+            }
+            document.getElementById("ruby").innerHTML = Ruby.toString();
+            document.getElementById("aLives").innerHTML = amberLives.toString();
+            document.getElementById("bLives").innerHTML = bellaLives.toString();
+        }
+
+        //obstacle8-waterfall
+        function drawWaterfall() //draws waterfall, makes sure ruby is collected before cage opens, draws levers, make waterfall dangerous, opens waterfall, and draws a emerald
+        {
+            drawPicture(pic16, 300, 0, 198, 330);//waterfall
+            drawPicture(pic17, 850, 0, 120, 80); //blocked lever to right
+            drawPicture(pic13, 530, 47, pic13.width, pic13.height, "#808080");//horizontal platform
+            if (left === 0)
+            {
+                if (char1.top < 0 + 330 && char1.top + char1.height > 0 && char1.left < 300 + 198 && char1.left + char1.width > 300)
+                {
+                    bellaLives--;
+                    checkHeartsBella();
+                    char1.left = 1800;
+                    char1.top = 180;
+                }
+                if (char2.top < 0 + 330 && char2.top + char2.height > 0 && char2.left < 300 + 198 && char2.left + char2.width > 300)
+                {
+                    amberLives--;
+                    checkHeartsAmber();
+                    char2.left = 1700;
+                    char2.top = 180;
+                }
+                if (char1.top < 200 + 52 && char1.top + char1.height > 200 && char1.left < 1110 + 58 && char1.left + char1.width > 1110)
+                {
+                    pic17.src= "img/rightLever2.png";
+                    right = 1;
+                }
+            }
+            if (char1.top < 0 + 62 && char1.top + char1.height > 0 && char1.left < 850 + 94 && char1.left + char1.width > 850 && right === 1)
+            {
+                pic17.src = "img/leftLever2.png";
+                pic16.src = "img/stoppedwaterfall.png";
+                pic13.width = 0;
+                pic13.height = 0;
+                left = 1;
+                drawPicture(gem6, 380, 180, gem6.width, gem6.height);//emerald
+                if (char2.top < 180 + 52 && char2.top + char2.height > 180 && char2.left < 380 + 52 && char2.left + char2.width > 380)
+                {
+                    gem6.height = 0;
+                    gem6.width = 0;
+                    emerald2 = 1;
+                    Emerald = emerald1 + emerald2;
+                }
+            }
+            if (char2.top < 0 + 62 && char2.top + char2.height > 0 && char2.left < 850 + 94 && char2.left + char2.width > 850 && right === 1)
+            {
+                pic17.src = "img/leftLever2.png";
+                pic16.src = "img/stoppedwaterfall.png";
+                pic13.width = 0;
+                pic13.height = 0;
+                left = 1;
+                drawPicture(gem6, 380, 180, gem6.width, gem6.height);//emerald
+            }
+            if (left === 1 && right === 1 || left === right)
+            {
+                if (char2.top < 0 + 330 && char2.top + char2.height > 330 && char2.left < 300 + 198 && char2.left + char2.width > 300)
+                {
+                    //nothing occurs
+                }
+                if (char1.top < 0 + 330 && char1.top + char1.height > 330 && char1.left < 300 + 198 && char1.left + char1.width > 300)
+                {
+                    //nothing occurs
+                }
+            }
+            document.getElementById("emerald").innerHTML = Emerald.toString();
+        }
+
+        //all drawing functions used
+        function drawRectangle(xPos, yPos, width, height, color)
+        {
+            let canvas = document.getElementById("myCanvas");
+            ctx = canvas.getContext("2d");
+            ctx.fillStyle = color;
+            ctx.fillRect(xPos, yPos, width, height);
+        }
+
+        function drawPicture(sourceFile, xPos, yPos, dimX, dimY)
+        {
+            let canvas = document.getElementById("myCanvas");
+            ctx = canvas.getContext("2d");
+            ctx.drawImage(sourceFile, xPos, yPos, dimX, dimY);
+        }
+
+        function drawText(message, xPos, yPos, width, color, font)
+        {
+            let canvas = document.getElementById("myCanvas");
+            ctx = canvas.getContext("2d");
+            ctx.fillStyle=color;
+            ctx.font = font;
+            ctx.fillText(message, xPos, yPos, width);
+        }
+
+        function drawBall() //draws spike ball and moves spike ball
+        {
+            for (let i=0; i<ball.length; i++)
+            {
+                if (i == 0 || i == 1)
+                {
+                    ball[i].left += speed1;
+                    if(ball[i].left > 1890)
+                    {
+                        ball[i].left = 0;
+                    }
+                }
+                ctx.drawImage(ball[i], ball[i].left, ball[i].top, ball[i].width, ball[i].height);
+                checkCollision1();
+                checkCollision2();
+            }
+        }
+
+        function drawJesterBen() //draws jester and moves jester
+        {
+            for (let i=0; i<jester.length; i++)
+            {
+                if (i == 0 || i ==1)
+                {
+                    jester[i].left += speed2;
+                    if(jester[i].left > 1400)
+                    {
+                        jester[i].left = 900;
+                    }
+                }
+                ctx.drawImage(jester[i], jester[i].left, jester[i].top, jester[i].width, jester[i].height);
+                checkCollision3();
+                checkCollision4();
+            }
+        }
+
+        function checkHeartsAmber() //checks ambers hearts for status on the top left
+        {
+            if (amberLives == 3)
+            {
+                life3.height = 50;
+                life3.width = 50;
+                life2.height = 50;
+                life2.width = 50;
+                life1.height = 50;
+                life1.width = 50;
+            }
+            if (amberLives == 2)
+            {
+                life3.height = 0;
+                life3.width = 0;
+                life2.height = 50;
+                life2.width = 50;
+                life1.height = 50;
+                life1.width = 50;
+            }
+            if (amberLives == 1)
+            {
+                life3.height = 0;
+                life3.width = 0;
+                life2.height = 0;
+                life2.width = 0;
+                life1.height = 50;
+                life1.width = 50;
+            }
+            if (amberLives == 0)
+            {
+                life3.height = 0;
+                life3.width = 0;
+                life2.height = 0;
+                life2.width = 0;
+                life1.height = 0;
+                life1.width = 0;
+            }
+        }
+
+        function checkHeartsBella() //checks bellas hearts for status on the top left
+        {
+            if (bellaLives == 3)
+            {
+                life6.height = 50;
+                life6.width = 50;
+                life5.height = 50;
+                life5.width = 50;
+                life4.height = 50;
+                life4.width = 50;
+            }
+            if (bellaLives == 2)
+            {
+                life6.height = 0;
+                life6.width = 0;
+                life5.height = 50;
+                life5.width = 50;
+                life4.height = 50;
+                life4.width = 50;
+            }
+            if (bellaLives == 1)
+            {
+                life6.height = 0;
+                life6.width = 0;
+                life5.height = 0;
+                life5.width = 0;
+                life4.height = 50;
+                life4.width = 50;
+            }
+            if (bellaLives == 0)
+            {
+                life6.height = 0;
+                life6.width = 0;
+                life5.height = 0;
+                life5.width = 0;
+                life4.height = 0;
+                life4.width = 0;
+            }
+        }
+
+        function moveBella() //moves bella/char1
+        {
+            ctx.drawImage(char1, char1.left, char1.top, char1.width, char1.height);
+        }
+
+        function moveAmber() //moves amber/char2
+        {
+            ctx.drawImage(char2, char2.left, char2.top, char2.width, char2.height);
+        }
+
+        function checkCollision1() //checks bellas collision with spike ball
+        {
+            for (let i=0; i < ball.length; i++)
+            {
+                if (char1.top < ball[i].top + ball[i].height
+                    && char1.left + char1.width > ball[i].left
+                    && char1.top + char1.height > ball[i].top
+                    && char1.left < ball[i].left + ball[i].width)
+                {
+                    alert("you have bumped into the spike ball! -1 life");
+                    bellaLives--;
+                    char1.left = 100;
+                    char1.top = 480;
+                    checkHeartsBella();
+                }
+                document.getElementById("bLives").innerHTML = bellaLives.toString();
+            }
+        }
+
+        function checkCollision2() //checks ambers collision with spike ball
+        {
+            for (let i=0; i < ball.length; i++)
+            {
+                if (char2.top < ball[i].top + ball[i].height
+                    && char2.left + char2.width > ball[i].left
+                    && char2.top + char2.height > ball[i].top
+                    && char2.left < ball[i].left + ball[i].width)
+                {
+                    alert("you have bumped into the spike ball! -1 life");
+                    char2.left = 200;
+                    char2.top = 480;
+                    amberLives--;
+                    checkHeartsAmber();
+                }
+                document.getElementById("aLives").innerHTML = amberLives.toString();
+            }
+        }
+
+        function checkCollision3() //checks bellas collision with jester
+        {
+            for (let i=0; i < jester.length; i++)
+            {
+                if (char1.top < jester[i].top + jester[i].height
+                    && char1.left + char1.width > jester[i].left
+                    && char1.top + char1.height > jester[i].top
+                    && char1.left < jester[i].left + jester[i].width)
+                {
+                    alert("you have bumped into the jester! -1 life");
+                    bellaLives--;
+                    char1.left = 1800;
+                    char1.top = 180;
+                    checkHeartsBella();
+                }
+                document.getElementById("bLives").innerHTML = bellaLives.toString();
+            }
+        }
+
+        function checkCollision4() //checks ambers collision with jester
+        {
+            for (let i=0; i < jester.length; i++)
+            {
+                if (char2.top < jester[i].top + jester[i].height
+                    && char2.left + char2.width > jester[i].left
+                    && char2.top + char2.height > jester[i].top
+                    && char2.left < jester[i].left + jester[i].width)
+                {
+                    alert("you have bumped into the jester! -1 life");
+                    char2.left = 1700;
+                    char2.top = 180;
+                    amberLives--;
+                    checkHeartsAmber();
+                }
+                document.getElementById("aLives").innerHTML = amberLives.toString();
+            }
+        }
+
+        function checkIvy1() //checks  for bellas collision with ivy bushes
+        {
+            if(char1.top < 480 + 127.5 && char1.top + char1.height > 480 && char1.left < 500 + 60 && char1.left + char1.width > 500)
+            {
+                alert("try again! -1 life");
+                char1.left = 100;
+                char1.top = 480;
+                bellaLives--;
+                checkHeartsBella();
+            }
+            if(char1.top < 300 + 180 && char1.top + char1.height > 300 && char1.left < 800 + 100 && char1.left + char1.width > 800)
+            {
+                alert("try again! -1 life");
+                char1.left = 100;
+                char1.top = 480;
+                bellaLives--;
+                checkHeartsBella();
+            }
+            if(char1.top < 480 + 127.5 && char1.top + char1.height > 480 && char1.left < 1100 + 60 && char1.left + char1.width > 1100)
+            {
+                alert("try again! -1 life");
+                char1.left = 100;
+                char1.top = 480;
+                bellaLives--;
+                checkHeartsBella();
+            }
+            if(char1.top < 480 + 127.5 && char1.top + char1.height > 480 && char1.left < 1400 + 60 && char1.left + char1.width > 1400)
+            {
+                alert("try again! -1 life");
+                char1.left = 100;
+                char1.top = 480;
+                bellaLives--;
+                checkHeartsBella();
+            }
+            document.getElementById("bLives").innerHTML = bellaLives.toString();
+        }
+
+        function checkIvy2() //checks for ambers collision with ivy bushes
+        {
+            if(char2.top < 480 + 127.5 && char2.top + char2.height > 480 && char2.left < 500 + 60 && char2.left + char2.width > 500)
+            {
+                alert("try again! -1 life");
+                char2.left = 200;
+                char2.top = 480;
+                amberLives--;
+                checkHeartsAmber();
+            }
+            if(char2.top < 300 + 180 && char2.top + char2.height > 300 && char2.left < 800 + 100 && char2.left + char2.width > 800)
+            {
+                alert("try again! -1 life");
+                char2.left = 200;
+                char2.top = 480;
+                amberLives--;
+                checkHeartsAmber();
+            }
+            if(char2.top < 480 + 127.5 && char2.top + char2.height > 480 && char2.left < 1100 + 60 && char2.left + char2.width > 1100)
+            {
+                alert("try again! -1 life");
+                char2.left = 200;
+                char2.top = 480;
+                amberLives--;
+                checkHeartsAmber();
+            }
+            if(char2.top < 480 + 127.5 && char2.top + char2.height > 480 && char2.left < 1400 + 60 && char2.left + char2.width > 1400)
+            {
+                alert("try again! -1 life");
+                char2.left = 200;
+                char2.top = 480;
+                amberLives--;
+                checkHeartsAmber();
+            }
+            document.getElementById("aLives").innerHTML = amberLives.toString();
+        }
+
+        function checkLava1() //checks for bellas collision with lava
+        {
+            if(char1.top < 870 + 25 && char1.top + char1.height > 870 && char1.left < 530 + 100 && char1.left + char1.width > 530)
+            {
+                    alert("try again! -1 life");
+                    char1.left = 1;
+                    char1.top = 780;
+                    bellaLives--;
+                    checkHeartsBella();
+            }
+            document.getElementById("bLives").innerHTML = bellaLives.toString();
+        }
+
+        function checkLava2() //checks for ambers collision with lava
+        {
+            if(char2.top < 870 + 25 && char2.top + char2.height > 870 && char2.left < 530 + 100 && char2.left + char2.width > 530)
+            {
+                alert("try again! -1 life");
+                char2.left = 150;
+                char2.top = 780;
+                amberLives--;
+                checkHeartsAmber();
+            }
+            document.getElementById("aLives").innerHTML = amberLives.toString();
+        }
+
+        function checkSpikes1() //checks for bellas collision with spikes
+        {
+            if(char1.top < 850 + 45 && char1.top + char1.height > 850 && char1.left < 950 + 90 && char1.left + char1.width > 950)
+            {
+                //drawPicture(pic9, 940, 855, 100, 45); //spikes facing up
+                alert("try again! -1 life");
+                char1.left = 1;
+                char1.top = 780;
+                bellaLives--;
+                checkHeartsBella();
+            }
+            if(char1.top < 640 + 45 && char1.top + char1.height > 640 && char1.left < 850 + 290 && char1.left + char1.width > 850)
+            {
+                //drawPicture(pic8, 840, 645, 100, 45); //spikes facing down
+                //drawPicture(pic8, 940, 645, 100, 45); //spikes facing down
+                //drawPicture(pic8, 1040, 645, 100, 45); //spikes facing down
+                alert("try again! -1 life");
+                char1.left = 0;
+                char1.top = 780;
+                amberLives--;
+                checkHeartsBella();
+            }
+            document.getElementById("bLives").innerHTML = bellaLives.toString();
+        }
+
+        function checkSpikes2() //checks for ambers collision with spikes
+        {
+            if(char2.top < 850 + 45 && char2.top + char2.height > 850 && char2.left < 950 + 90 && char2.left + char2.width > 950)
+            {
+                //drawPicture(pic9, 940, 855, 100, 45); //spikes facing up
+                alert("try again! -1 life");
+                char2.left = 150;
+                char2.top = 780;
+                bellaLives--;
+                checkHeartsAmber();
+            }
+            if(char2.top < 640 + 45 && char2.top + char2.height > 640 && char2.left < 850 + 290 && char2.left + char2.width > 850)
+            {
+                //drawPicture(pic8, 840, 645, 100, 45); //spikes facing down
+                //drawPicture(pic8, 940, 645, 100, 45); //spikes facing down
+                //drawPicture(pic8, 1040, 645, 100, 45); //spikes facing down
+                alert("try again! -1 life");
+                char2.left = 150;
+                char2.top = 780;
+                amberLives--;
+                checkHeartsAmber();
+            }
+            document.getElementById("aLives").innerHTML = amberLives.toString();
+        }
+
+        function collectRuby() //function to collect rubies
+        {
+            if(char1.top < 820 + 47 && char1.top + char1.height > 820 && char1.left < 760 + 47 && char1.left + char1.width > 760)
+            {
+                //drawPicture(gem3, 760, 820, 58, 52);//ruby
+                gem3.height = 0;
+                gem3.width = 0;
+                ruby1 = 1;
+                Ruby = ruby1 + ruby2;
+            }
+            if (char1.top < 200 + 52 && char1.top + char1.height > 200 && char1.left < 1110 + 58 && char1.left + char1.width > 1110)
+            {
+                gem4.height = 0;
+                gem4.width = 0;
+                ruby2 = 1;
+                Ruby = ruby1 + ruby2;
+            }
+            document.getElementById("ruby").innerHTML = Ruby.toString();
+        }
+
+        function collectEmerald() //function to collect emeralds
+        {
+            if(char2.top < 820 + 47 && char2.top + char2.height > 820 && char2.left < 1200 + 47 && char2.left + char2.width > 1200)
+            {
+                //drawPicture(gem5, 1200, 820, 52, 52);//emerald
+                gem5.height = 0;
+                gem5.width = 0;
+                emerald1 = 1;
+                Emerald = emerald1 + emerald2;
+            }
+            document.getElementById("emerald").innerHTML = Emerald.toString();
+        }
+
+        function collectDiamond() //function to collect diamonds
+        {
+            if(char1.top < 530 + 60 && char1.top + char1.height > 530 && char1.left < 1250 + 70 && char1.left + char1.width > 1250)
+            {
+                //drawPicture(gem2, 1250, 530, 70, 60);//diamond
+                gem2.height = 0;
+                gem2.width = 0;
+                diamond1 = 1;
+                Diamond = diamond1 + diamond2;
+            }
+            if(char2.top < 530 + 60 && char2.top + char2.height > 530 && char2.left < 1250 + 70 && char2.left + char2.width > 1250)
+            {
+                //drawPicture(gem2, 1250, 530, 70, 60);//diamond
+                gem2.height = 0;
+                gem2.width = 0;
+                diamond1 = 1;
+                Diamond = diamond1 + diamond2;
+            }
+            document.getElementById("diamond").innerHTML = Diamond.toString();
+        }
+
+        function collectPotion() //function top collect potion that gives one heart
+        {
+            if (lifeAdded === 0)
+            {
+                if(char1.top < 530 + 47 && char1.top + char1.height > 530 && char1.left < 820 + 29 && char1.left + char1.width > 820)
+                {
+                    pic18.height = 0;
+                    pic18.width = 0;
+                    bellaLives++;
+                    checkHeartsBella();
+                    lifeAdded = 1;
+                }
+                if (char2.top < 530 + 47 && char2.top + char2.height > 530 && char2.left < 820 + 29 && char2.left + char2.width > 820) {
+                    pic18.height = 0;
+                    pic18.width = 0;
+                    amberLives++;
+                    checkHeartsAmber();
+                    lifeAdded = 1;
+                }
+            }
+            if (lifeAdded === 1)
+            {
+                if (char2.top < 530 + 47 && char2.top + char2.height > 530 && char2.left < 820 + 29 && char2.left + char2.width > 820)
+                {
+                    //do nothing
+                }
+                if(char1.top < 530 + 47 && char1.top + char1.height > 530 && char1.left < 820 + 29 && char1.left + char1.width > 820)
+                {
+                    //do nothing
+                }
+            }
+            document.getElementById("aLives").innerHTML = amberLives.toString();
+            document.getElementById("bLives").innerHTML = bellaLives.toString();
+        }
+
+        function checkWinOrLoss() //checks how many gems you have to result in a win or loss at the door and makes sure both characters are at the door
+        {
+            //drawPicture(pic20, 5, 125, 99, 174);//door
+            //(0, 0, 100, 200)
+            if (amberLives < 0)
+            {
+                alert("You lose! Amber has no more lives left, try again!");
+                location.reload(); //learnt from https://www.bitdegree.org/learn/javascript-refresh-page
+            }
+            if (bellaLives < 0)
+            {
+                alert("You lose! Bella has no more lives left, try again!");
+                location.reload(); //learnt from https://www.bitdegree.org/learn/javascript-refresh-page
+            }
+            if(char1.top < 125 + 174 && char1.top + char1.height > 125 && char1.left < 5 + 90 && char1.left + char1.width > 5)
+            {
+                pic20.src = "img/closeddoor.png";
+                bLeaves = 2;
+            }
+            if(char2.top < 125 + 174 && char2.top + char2.height > 125 && char2.left < 5 + 90 && char2.left + char2.width > 5)
+            {
+                pic20.src = "img/closeddoor.png";
+                aLeaves = 2;
+            }
+            if(aLeaves === 2 && bLeaves === 2)
+            {
+                if (Diamond === 2 && Emerald === 2 && Ruby === 2)
+                {
+                    totalLives = amberLives + bellaLives;
+                    if (totalLives >= 6)
+                    {
+                        grade = "A";
+                    }
+                    if (totalLives === 4 || totalLives === 5)
+                    {
+                        grade = "B"
+                    }
+                    if (totalLives < 4)
+                    {
+                        grade = "C"
+                    }
+                    alert("You won! You collected all the Gems " + "Amber has " + amberLives + " left and Bella has " + bellaLives + " left. And also ended with the grade: " + grade + ". Good Job!");
+                    location.reload(); //learnt from https://www.bitdegree.org/learn/javascript-refresh-page
+                }
+                if (Diamond === 0 || Diamond === 1 || Emerald === 0 || Emerald === 1 || Ruby === 0 || Ruby === 1)
+                {
+                    alert("You lose! You need more gems! The game will start over");
+                    location.reload(); //learnt from https://www.bitdegree.org/learn/javascript-refresh-page
+                }
+            }
+            document.getElementById("aLives").innerHTML = amberLives.toString();
+            document.getElementById("bLives").innerHTML = bellaLives.toString();
+        }
+
+        $(document).keydown(function(event) { //keydown for bella
+            let keycode = (event.keyCode ? event.keyCode : event.which);
+
+            if (keycode == 87) //w up
+            {
+                char1.top = char1.top - 20;
+            }
+
+            if (keycode == 83) //s down
+            {
+                char1.top = char1.top + 20;
+            }
+            if (keycode == 68) //d right
+            {
+                char1.left = char1.left + 25;
+            }
+            if (keycode == 65) //a left
+            {
+                char1.left = char1.left - 25;
+            }
+        });
+
+        $(document).keydown(function(event) { //keydown for amber
+            let keycode = (event.keyCode ? event.keyCode : event.which);
+
+            if (keycode == 38) //up
+            {
+                char2.top = char2.top - 25;
+            }
+
+            if (keycode == 40) //down
+            {
+                char2.top = char2.top + 20;
+            }
+            if (keycode == 39) //right
+            {
+                char2.left = char2.left + 25;
+            }
+            if (keycode == 37) //left
+            {
+                char2.left = char2.left - 25;
+            }
+        });
+
+        let createImage = function(src, title, xcord, ycord, width, height) //parameters for all images
+        {
+            let img = new Image();
+            img.src = src;
+            img.alt = title;
+            img.title = title;
+            img.left = xcord;
+            img.top = ycord;
+            img.width = width;
+            img.height = height;
+
+            return img;
+        };
+    </script>
+</head>
+<body onload="LoadIn()">
+<canvas id="myCanvas" width="1890" height="900" style="border: 1px solid"></canvas>
+<!--HTML-->
+<table id="gems" border="3px solid">
+    <tr>
+        <th><strong>Gems earned and lives left:</strong></th>
+        <th></th>
+        <th><img src="img/Diamond.png" height="30" width="35"/></th>
+        <th>Diamond:</th>
+        <th><p id="diamond"></p>out of 2</th>
+        <th></th>
+        <th><img src="img/Ruby.png" height="26" width="28"/></th>
+        <th>Ruby:</th>
+        <th><p id="ruby"></p>out of 2</th>
+        <th></th>
+        <th><img src="img/Emerald.png" height="32" width="32"/></th>
+        <th>Emerald:</th>
+        <th><p id="emerald"></p>out of 2</th>
+        <th></th>
+        <th>Bella:<p id="bLives"></p></th>
+        <th>Amber:<p id="aLives"></p></th>
+    </tr>
+</table>
+</body>
+</html>
