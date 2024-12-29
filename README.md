@@ -1,1 +1,1 @@
-One of the first games I made.
+One of the first games I made for my Create task in AP Computer Science Principles. If you look through the code you can see the sheer amount of hard coding I did. But all in all it was a great beginner project with over 1000 lines of code.
